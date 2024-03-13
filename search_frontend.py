@@ -79,27 +79,44 @@ def list_of_docid_and_title(query):
 
     tokens = [tup[0] for tup in word_count(query, 0)]  # Get terms from query
     list_for_current_term = []
+    list_all = []
     docid_term_to_appearance_dict = {}
     docid_term_to_tf_dict = {}
     docid_term_to_tf_idf_dict = {}
     docid_to_sum_of_tfidf_dict = {}
+    score_penalty_dict = {}
     for term in tokens:
         list_for_current_term = inverted_body.read_a_posting_list("", term, bucket_name)
+        list_all += list_for_current_term
         for doc_id, appearance in list_for_current_term:
-
-            docid_term_to_appearance_dict[(doc_id, term)] = appearance
+            docid_term_to_appearance_dict[(doc_id, term)] = 1
+            """
             docid_term_to_tf_dict[(doc_id, term)] = docid_term_to_appearance_dict[(doc_id, term)] / \
                                                     inverted_body.doc_lengths[doc_id]
-            docid_term_to_tf_idf_dict[(doc_id, term)] = docid_term_to_tf_dict[(doc_id, term)] * compute_idf_value(term)
+            docid_term_to_tf_idf_dict[(doc_id, term)] = docid_term_to_tf_dict[(doc_id, term)]
 
             if doc_id not in docid_to_sum_of_tfidf_dict:
                 docid_to_sum_of_tfidf_dict[doc_id] = docid_term_to_tf_idf_dict[(doc_id, term)]
             else:
                 docid_to_sum_of_tfidf_dict[doc_id] += docid_term_to_tf_idf_dict[(doc_id, term)]
+            """
 
-    docs = sorted(docid_to_sum_of_tfidf_dict.items(), key=lambda x: x[1], reverse=True)
+    for doc_id, appearance in list_all:
+        score = 0
+        for term in tokens:
+            tokens_in_title = [tup[0] for tup in word_count(inverted_body.docid_to_title_dict[doc_id], 0)]
+            if (doc_id, term) in docid_term_to_appearance_dict:
+                if term in tokens_in_title:
+                    score += docid_term_to_appearance_dict[(doc_id, term)] + 1  # Add 1 to score if term in title
+                else:
+                    score += docid_term_to_appearance_dict[(doc_id, term)] - 1  # No adjustment if term not in title
+        score_penalty_dict[doc_id] = score * 0.5  # Normalize the score
+
+    docs = sorted(score_penalty_dict.items(), key=lambda x: x[1], reverse=True)
     my_list = []
-    for i in range(len(docs)):
+    num_docs = len(docs)
+    real_docs = min(30, num_docs)
+    for i in range(real_docs):
         my_list.append((str(docs[i][0]), inverted_body.docid_to_title_dict[docs[i][0]]))
     return my_list
 
