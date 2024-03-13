@@ -1,30 +1,40 @@
-Search Engine Readme
-This repository contains a Flask application implementing a search engine using TF-IDF and cosine similarity for retrieving relevant Wikipedia articles. Below is the explanation of the code structure, organization, and functionality of each major piece in the implementation:
+# Project Overview
+This repository contains code for a Flask-based RESTful API that serves as a search engine for Wikipedia articles. The search engine provides various endpoints to search articles based on different criteria and retrieve relevant information such as titles and IDs.
 
-Code Structure
-The code is organized into several sections:
+# Code Structure
+The code is organized as follows:
 
-Imports: Imports necessary libraries and modules including Flask, PySpark, NLTK, and Google Cloud Storage client.
-Custom Flask App: Defines a custom Flask application class MyFlaskApp which overrides the run method to allow custom configuration options.
-Global Variables: Defines global variables including inverted_body, which is used to store inverted indices for the Wikipedia articles.
-Stopwords and Tokenization: Defines functions for removing stopwords, tokenizing text, and computing word counts.
-TF-IDF Computation: Defines functions for computing TF-IDF values and listing documents based on TF-IDF scores.
-Flask Routes:
-/search: Handles search queries by returning the top 100 search results based on TF-IDF scores of the body of articles.
-/search_body: Returns up to 100 search results for the query using TF-IDF and cosine similarity of the body of articles only.
-/search_title: Returns all search results that contain a query word in the title of articles, ordered by the number of distinct query words in the title.
-/search_anchor: Returns all search results that contain a query word in the anchor text of articles, ordered by the number of query words in the anchor text.
-/get_pagerank: Returns PageRank values for a list of provided wiki article IDs.
-/get_pageview: Returns the number of page views for each of the provided wiki articles in August 2021.
-Functionality
-The application provides search functionality allowing users to query Wikipedia articles.
-It supports various types of searches including body search, title search, and anchor search.
-The TF-IDF algorithm is used for ranking search results based on relevance.
-PageRank values and page view counts are also provided for additional information.
-Usage
-To use the search engine, follow these steps:
+- app.py: This is the main entry point of the application. It contains the Flask application definition along with routes for different endpoints.
+- utils.py: This module contains utility functions used for text processing, TF-IDF computation, and other data manipulation tasks.
+- requirements.txt: This file lists all the dependencies required to run the application. Install these dependencies using pip install -r requirements.txt.
 
-Ensure all dependencies are installed (Flask, pyspark, nltk, google-cloud-storage).
-Run the Flask application by executing the script.
-Access the different search endpoints (/search, /search_body, /search_title, /search_anchor) with appropriate query parameters.
-Optionally, retrieve PageRank values and page view counts using the /get_pagerank and /get_pageview endpoints respectively.
+# Functionality
+
+**Search Endpoint (/search)**
+- Description: This endpoint returns up to 100 search results for the provided query.
+- Functionality: It tokenizes the query, filters out stopwords, computes TF-IDF scores for each term, and ranks documents based on the presence of query terms in the titles.
+
+**Search Body Endpoint (/search_body)**
+- Description: This endpoint returns up to 100 search results for the query using TF-IDF and cosine similarity based on the body of articles.
+- Functionality: The body of articles is tokenized using a provided tokenizer, stopwords are removed, and TF-IDF scores are computed. Cosine similarity is used to rank documents.
+
+**Search Title Endpoint (/search_title)**
+- Description: This endpoint returns all search results containing a query word in the title, ordered by the number of distinct query words appearing in the title.
+- Functionality: Titles are tokenized using a provided tokenizer, stopwords are removed, and documents are ranked based on the number of distinct query words in the title.
+
+**Search Anchor Endpoint (/search_anchor)**
+- Description: This endpoint returns all search results containing a query word in the anchor text of articles, ordered by the number of query words in the anchor text.
+- Functionality: Anchor text is tokenized using a provided tokenizer, stopwords are removed, and documents are ranked based on the number of query words in the anchor text.
+
+**PageRank Endpoint (/get_pagerank)**
+- Description: This endpoint returns PageRank values for a list of provided Wikipedia article IDs.
+- Functionality: PageRank values are computed for the provided article IDs.
+
+**PageView Endpoint (/get_pageview)**
+- Description: This endpoint returns the number of page views for each of the provided Wikipedia articles in August 2021.
+- Functionality: Page view numbers are retrieved for the provided article IDs.
+
+**Running the Application**
+- To run the Flask application locally, execute the following command:
+search_frontend.py
+- The application will be available at http://localhost:8080.
