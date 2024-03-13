@@ -1,41 +1,30 @@
-# IR-Search-Engine-
-The Search Engine Project in IR Course
+Search Engine Readme
+This repository contains a Flask application implementing a search engine using TF-IDF and cosine similarity for retrieving relevant Wikipedia articles. Below is the explanation of the code structure, organization, and functionality of each major piece in the implementation:
 
-## Code Structure and Organization
+Code Structure
+The code is organized into several sections:
 
-The provided code consists of a Flask application (`MyFlaskApp`) implementing several endpoints for searching and retrieving information from a dataset. Here's a breakdown of the code structure:
+Imports: Imports necessary libraries and modules including Flask, PySpark, NLTK, and Google Cloud Storage client.
+Custom Flask App: Defines a custom Flask application class MyFlaskApp which overrides the run method to allow custom configuration options.
+Global Variables: Defines global variables including inverted_body, which is used to store inverted indices for the Wikipedia articles.
+Stopwords and Tokenization: Defines functions for removing stopwords, tokenizing text, and computing word counts.
+TF-IDF Computation: Defines functions for computing TF-IDF values and listing documents based on TF-IDF scores.
+Flask Routes:
+/search: Handles search queries by returning the top 100 search results based on TF-IDF scores of the body of articles.
+/search_body: Returns up to 100 search results for the query using TF-IDF and cosine similarity of the body of articles only.
+/search_title: Returns all search results that contain a query word in the title of articles, ordered by the number of distinct query words in the title.
+/search_anchor: Returns all search results that contain a query word in the anchor text of articles, ordered by the number of query words in the anchor text.
+/get_pagerank: Returns PageRank values for a list of provided wiki article IDs.
+/get_pageview: Returns the number of page views for each of the provided wiki articles in August 2021.
+Functionality
+The application provides search functionality allowing users to query Wikipedia articles.
+It supports various types of searches including body search, title search, and anchor search.
+The TF-IDF algorithm is used for ranking search results based on relevance.
+PageRank values and page view counts are also provided for additional information.
+Usage
+To use the search engine, follow these steps:
 
-- **Flask Application (`MyFlaskApp`):**
-  - This class extends the Flask framework's `Flask` class to create a custom Flask application.
-  - It includes custom configurations and settings for the Flask app.
-
-- **Initialization and Utility Functions:**
-  - `init_indexex()`: Initializes indexes required for search functionality. It loads inverted index data from Google Cloud Storage using the Google Cloud Storage Python Client.
-  - `word_count(text, id)`: Tokenizes the text, filters out stopwords, and computes term frequencies.
-  - `list_of_docid_and_title(query)`: Retrieves a list of document IDs and titles based on a search query using TF-IDF scoring.
-  - Other utility functions for different types of searches like body search, title search, and anchor text search.
-
-- **Flask Endpoints:**
-  - `/search`: Endpoint for issuing a search query and retrieving up to 100 search results based on TF-IDF scoring.
-  - `/search_body`: Endpoint for searching within the body of articles using TF-IDF and cosine similarity.
-  - `/search_title`: Endpoint for searching within article titles, ordered by the number of distinct query words.
-  - `/search_anchor`: Endpoint for searching within anchor text of articles, ordered by the number of query words in the anchor text.
-  - `/get_pagerank`: Endpoint for retrieving PageRank values for a list of provided wiki article IDs.
-  - `/get_pageview`: Endpoint for retrieving the number of page views for provided wiki article IDs in August 2021.
-
-## Functionality
-
-- **Search Endpoints (`/search`, `/search_body`, `/search_title`, `/search_anchor`):**
-  - These endpoints accept a query parameter and return relevant search results based on different criteria such as TF-IDF scoring, body text similarity, title matching, and anchor text matching.
-  - The search algorithms are implemented to return the most relevant results based on the specific requirements mentioned in the docstrings.
-
-- **Data Retrieval Endpoints (`/get_pagerank`, `/get_pageview`):**
-  - These endpoints accept a list of wiki article IDs and return PageRank values and page view numbers for the provided article IDs, respectively.
-  - The data is retrieved based on the input article IDs and may involve querying external data sources.
-
-## Running the Application
-
-- The Flask application is configured to run on host `0.0.0.0` and port `8080`.
-- To run the application, execute the script, and the Flask RESTful API will be accessible via the specified host and port.
-- External services such as Google Cloud Storage might be required for certain functionalities, and appropriate configurations should be set up.
-
+Ensure all dependencies are installed (Flask, pyspark, nltk, google-cloud-storage).
+Run the Flask application by executing the script.
+Access the different search endpoints (/search, /search_body, /search_title, /search_anchor) with appropriate query parameters.
+Optionally, retrieve PageRank values and page view counts using the /get_pagerank and /get_pageview endpoints respectively.
